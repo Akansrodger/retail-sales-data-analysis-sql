@@ -32,7 +32,7 @@ Questions I answered with this project:
 5. Identify the product with the highest total sales revenue (using subquery and join method)
 
 SQL SCRIPTS
-
+https://fantastic-winner-jjqjxq4pw6jwfjq6.github.dev/
 
  Connect With Me  
 
