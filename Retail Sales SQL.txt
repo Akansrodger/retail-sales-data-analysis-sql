@@ -1,0 +1,94 @@
+
+create table Products(
+ProductID INT PRIMARY KEY,
+ProductName Varchar(50),
+Category Varchar(50),
+UnitPrice Decimal(10, 2)
+);
+
+create table Sales(
+SalesID INT Primary key,
+ProductID INT,
+Quantity INT,
+SaleDate Date
+);
+
+Insert into Products values
+(1, 'Coca-Cola', 'beverage', 150.00),
+(2, 'Indomie Noodles', 'Food', 400.00),
+(3, 'Dettol Soap', 'Toiletries', 250.00),
+(4, 'Lenovo', 'Laptop', 700.00),
+(5, 'Thermocool', 'Air Conditioner', 1000.00);
+
+Insert Into Sales Values
+(1, 1, 30, '2025-06-12'),
+(2, 2, 20, '2025-06-16'),
+(3, 3, 12, '2025-06-17'),
+(4, 5, 18, '2025-06-20'),
+(5, 4, 5, '2025-07-01');
+
+
+
+
+
+Question 1 
+-- View all sales with Product Names
+SELECT 
+  S.SaleDate, 
+  P.ProductName, 
+  S.Quantity, 
+  P.UnitPrice, 
+  (S.Quantity * P.UnitPrice) AS Total_Sale
+FROM Sales S
+JOIN Products P ON S.ProductID = P.ProductID;
+
+Question 2
+-- Total sales per product
+SELECT 
+  ProductName, 
+  SUM(S.Quantity) AS total_quantity_sold, 
+  SUM(S.Quantity * P.UnitPrice) AS total_revenue
+FROM Sales S
+JOIN Products P ON S.ProductID = P.ProductID
+GROUP BY ProductName
+ORDER BY total_revenue DESC;
+
+Question 3
+-- Average quantity sold per product
+SELECT 
+  ProductName, 
+  AVG(S.Quantity) AS average_sold
+FROM Sales S
+JOIN Products P ON S.ProductID = P.ProductID
+GROUP BY ProductName;
+
+Question 4
+-- Products with total sales revenue above 3,000
+SELECT 
+  P.ProductName, 
+  SUM(S.Quantity * P.UnitPrice) AS Total_revenue
+FROM Sales S
+JOIN Products P ON S.ProductID = P.ProductID
+GROUP BY ProductName
+HAVING SUM(S.Quantity * P.UnitPrice) > 3000;
+
+Question 5
+-- Product with highest total sales revenue (Subquery)
+SELECT ProductName 
+FROM Products 
+WHERE ProductID = (
+  SELECT ProductID 
+  FROM Sales 
+  GROUP BY ProductID 
+  ORDER BY SUM(Quantity * (SELECT UnitPrice FROM Products WHERE Products.ProductID = Sales.ProductID)) DESC 
+  LIMIT 1
+);
+
+-- Same result using Join and Order
+SELECT 
+  P.ProductName
+FROM Products P
+JOIN Sales S ON P.ProductID = S.ProductID
+GROUP BY P.ProductName
+ORDER BY SUM(S.Quantity * P.UnitPrice) DESC
+LIMIT 1;
